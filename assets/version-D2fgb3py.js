@@ -1,0 +1,1 @@
+var e=`3.2.2`,t=`9b086ab`,n=`2026-08-16T20:22:40.782Z`,r=`v${e} · ${t}`;export{r as i,t as n,n as r,e as t};

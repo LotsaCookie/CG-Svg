@@ -1,0 +1,1 @@
+function e(e){return`${`./`.replace(/\/*$/,`/`)}${e.replace(/^\/+/,``)}`}var t=`https://kristenblackburnvolleyballcamps.com`.replace(/\/+$/,``);function n(n){let r=String(n??``);return!r||!t||!r.startsWith(`/`)?r:r.startsWith(`/elements/`)||r.startsWith(`/favicon`)?e(r):t+r}export{n,e as t};

@@ -1,0 +1,1 @@
+import{o as e}from"./chunk-zsgVPwQN.js";import{n as t}from"./jsx-runtime-BKtKQEYl.js";import{s as n}from"./chunk-5KNZJZUH-BH9z6h6V.js";var r=e(t(),1);function i(e=`/`){let t=n();return(0,r.useCallback)(()=>{(window.history.state?.idx??0)>0?t(-1):t(e,{replace:!0})},[t,e])}export{i as t};
