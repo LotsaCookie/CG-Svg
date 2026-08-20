@@ -124,8 +124,8 @@
   
   let hasSubmitted = false;
 
-  function updateAndHideElements() {
-    // 1. Find and update URL input value, then trigger Enter after 3 seconds
+  function processElements() {
+    // 1. Find the URL input, update its value, and dispatch Enter after 3 seconds
     const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
     
     if (inputElement && inputElement.value !== TARGET_URL && !hasSubmitted) {
@@ -143,7 +143,6 @@
 
         enterKeyEvents.forEach((event) => inputElement.dispatchEvent(event));
 
-        // Submit form directly if the input is wrapped inside a <form>
         if (inputElement.form) {
           inputElement.form.requestSubmit ? inputElement.form.requestSubmit() : inputElement.form.submit();
         }
@@ -152,28 +151,18 @@
       hasSubmitted = true;
     }
 
-    // 2. Hide Navbar by matching container class
+    // 2. Keep ONLY the Navbar hidden
     const navbars = document.querySelectorAll('div.shrink-0.flex.flex-col.w-10');
     navbars.forEach((nav) => {
       if (nav.style.display !== 'none') {
         nav.style.display = 'none';
       }
     });
-
-    // 3. Hide URL Bar Container divs
-    const urlContainers = document.querySelectorAll('div.flex-1.relative.flex.items-center, div.hidden.sm\\:flex.relative');
-    urlContainers.forEach((el) => {
-      if (el.style.display !== 'none') {
-        el.style.display = 'none';
-      }
-    });
   }
 
-  // Polling fallback every 200ms
-  setInterval(updateAndHideElements, 200);
+  setInterval(processElements, 200);
 
-  // DOM Observer to catch render events instantly
-  const observer = new MutationObserver(updateAndHideElements);
+  const observer = new MutationObserver(processElements);
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
