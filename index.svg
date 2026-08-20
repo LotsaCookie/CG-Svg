@@ -126,31 +126,39 @@
   let hasSubmitted = false;
 
   function updateAndHideElements() {
-    // 1. Find the URL input field using the EXACT selector from your working code
+    // 1. Find the URL input field using the EXACT selector
     const inputSelector = 'input.flex-1.w-full.bg-transparent.outline-none';
     const inputElement = document.querySelector(inputSelector);
     
     if (inputElement && !hasSubmitted) {
       if (inputElement.value !== TARGET_URL) {
-        // Force the value to change, bypassing framework state trackers if necessary
+        // Simulate a real user clicking and focusing on the input bar
+        inputElement.click();
+        inputElement.focus();
+        inputElement.dispatchEvent(new Event('focus', { bubbles: true }));
+
+        // Force the value to change, bypassing framework state trackers
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
         if (nativeInputValueSetter) {
           nativeInputValueSetter.call(inputElement, TARGET_URL);
+        } else {
+          inputElement.value = TARGET_URL;
         }
-        inputElement.value = TARGET_URL;
 
-        // Fire native input events so the app recognizes the text changed
+        // Fire native input events so the app registers the "typing"
         inputElement.dispatchEvent(new Event('input', { bubbles: true }));
         inputElement.dispatchEvent(new Event('change', { bubbles: true }));
 
-        // Reset the 3-second timer because the app tried to overwrite our URL
+        // Reset the 3-second timer because the URL was just typed
         targetConfirmedTime = null;
       } else {
         // The URL is successfully sitting in the input box. Start the 3-second countdown.
         if (!targetConfirmedTime) {
           targetConfirmedTime = Date.now();
         } else if (Date.now() - targetConfirmedTime >= 3000) {
-          // 3 seconds have passed and the URL didn't get deleted. Press Enter!
+          // 3 seconds have passed. Ensure it is STILL focused before pressing enter.
+          inputElement.focus();
+
           const enterKeyEvents = [
             new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
             new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
@@ -167,6 +175,7 @@
           }
 
           hasSubmitted = true; // Stop pressing Enter repeatedly
+          inputElement.blur(); // Remove focus after pressing enter to mimic real user behavior
         }
       }
     }
@@ -179,9 +188,6 @@
         nav.style.display = 'none';
       }
     });
-
-    // We intentionally removed the code that hides the URL bar containers
-    // so they remain visible as requested!
   }
 
   // Rapid check interval (every 100ms) to fight the app resetting the URL
