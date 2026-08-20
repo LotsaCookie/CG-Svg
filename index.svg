@@ -122,71 +122,69 @@
         (function () {
   const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
   
+  // 1. OPTIMIZATION: Hide the Navbar using CSS instead of constantly querying it via JS.
+  // This completely eliminates the layout-thrashing that was freezing the browser.
+  const style = document.createElement('style');
+  style.textContent = `
+    div.shrink-0.flex.flex-col.w-10 { 
+      display: none !important; 
+    }
+  `;
+  document.head.appendChild(style);
+
   let targetConfirmedTime = null;
   let hasSubmitted = false;
 
-  function updateAndHideElements() {
-    // 1. Find the URL input field
-    const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
-    
-    if (inputElement && !hasSubmitted) {
-      if (inputElement.value !== TARGET_URL) {
-        // Force key React setter if framework uses value tracker property
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-        if (nativeInputValueSetter) {
-          nativeInputValueSetter.call(inputElement, TARGET_URL);
-        } else {
-          inputElement.value = TARGET_URL;
-        }
-
-        // Fire native input events
-        inputElement.dispatchEvent(new Event('input', { bubbles: true }));
-        inputElement.dispatchEvent(new Event('change', { bubbles: true }));
-
-        // Reset timer if value was overwritten back to default
-        targetConfirmedTime = null;
-      } else {
-        // Start counting 3 seconds only when value stays stable at TARGET_URL
-        if (!targetConfirmedTime) {
-          targetConfirmedTime = Date.now();
-        } else if (Date.now() - targetConfirmedTime >= 3000) {
-          // Trigger Enter keypress events
-          const enterKeyEvents = [
-            new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-            new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
-            new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
-          ];
-
-          enterKeyEvents.forEach((event) => inputElement.dispatchEvent(event));
-
-          if (inputElement.form) {
-            inputElement.form.requestSubmit ? inputElement.form.requestSubmit() : inputElement.form.submit();
-          }
-
-          hasSubmitted = true;
-        }
-      }
+  // 2. OPTIMIZATION: Use a gentle interval (250ms) instead of aggressive MutationObservers.
+  const monitorInterval = setInterval(() => {
+    // If we already successfully pressed enter, stop checking to save CPU.
+    if (hasSubmitted) {
+      clearInterval(monitorInterval);
+      return;
     }
 
-    // 2. Hide Navbar only (keeps URL Bar Container visible)
-    const navbars = document.querySelectorAll('div.shrink-0.flex.flex-col.w-10');
-    navbars.forEach((nav) => {
-      if (nav.style.display !== 'none') {
-        nav.style.display = 'none';
+    const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
+    
+    // Wait until the input actually exists on the screen
+    if (!inputElement) return;
+
+    // Check if the URL is wrong (either it just loaded, or the site forced it back to cherri://home)
+    if (inputElement.value !== TARGET_URL) {
+      
+      // Update value securely for React/Vue frameworks
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+      if (nativeInputValueSetter) {
+        nativeInputValueSetter.call(inputElement, TARGET_URL);
+      } else {
+        inputElement.value = TARGET_URL;
       }
-    });
-  }
 
-  // Polling check every 100ms
-  setInterval(updateAndHideElements, 100);
+      // Tell the page the input changed
+      inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+      inputElement.dispatchEvent(new Event('change', { bubbles: true }));
 
-  // Observer to re-apply if state changes dynamically
-  const observer = new MutationObserver(updateAndHideElements);
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-    attributes: true
-  });
+      // Reset the 3-second timer because the value wasn't stable
+      targetConfirmedTime = null;
+      
+    } else {
+      // The URL is currently correct. Start or check our 3-second timer.
+      if (!targetConfirmedTime) {
+        targetConfirmedTime = Date.now();
+      } else if (Date.now() - targetConfirmedTime >= 3000) {
+        
+        // 3 seconds have passed without the URL changing. Press Enter.
+        const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true });
+        inputElement.dispatchEvent(enterEvent);
+
+        if (inputElement.form) {
+          try { inputElement.form.requestSubmit(); } catch(e) { inputElement.form.submit(); }
+        }
+
+        // Mark as submitted to destroy the interval loop
+        hasSubmitted = true;
+      }
+    }
+  }, 250); 
 })();
 /*]]>*/
         </script>
