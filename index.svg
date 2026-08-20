@@ -120,45 +120,66 @@
         <script>
 /*<![CDATA[*/
         (function () {
-          const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
+  const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
+  
+  let hasSubmitted = false;
 
-          function updateAndHideElements() {
-            // Find input field using partial class matching
-            const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
-            if (inputElement && inputElement.value !== TARGET_URL) {
-              inputElement.value = TARGET_URL;
-              inputElement.dispatchEvent(new Event('input', { bubbles: true }));
-              inputElement.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+  function updateAndHideElements() {
+    // 1. Find and update URL input value, then trigger Enter after 3 seconds
+    const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
+    
+    if (inputElement && inputElement.value !== TARGET_URL && !hasSubmitted) {
+      inputElement.value = TARGET_URL;
+      inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+      inputElement.dispatchEvent(new Event('change', { bubbles: true }));
 
-            // Hide Navbar by matching container class
-            const navbars = document.querySelectorAll('div.shrink-0.flex.flex-col.w-10');
-            navbars.forEach((nav) => {
-              if (nav.style.display !== 'none') {
-                nav.style.display = 'none';
-              }
-            });
+      // Wait 3 seconds, then simulate pressing "Enter"
+      setTimeout(() => {
+        const enterKeyEvents = [
+          new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+          new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+          new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
+        ];
 
-            // Hide URL Bar Container divs
-            const urlContainers = document.querySelectorAll('div.flex-1.relative.flex.items-center, div.hidden.sm\\:flex.relative');
-            urlContainers.forEach((el) => {
-              if (el.style.display !== 'none') {
-                el.style.display = 'none';
-              }
-            });
-          }
+        enterKeyEvents.forEach((event) => inputElement.dispatchEvent(event));
 
-          // Polling fallback every 200ms
-          setInterval(updateAndHideElements, 200);
+        // Submit form directly if the input is wrapped inside a <form>
+        if (inputElement.form) {
+          inputElement.form.requestSubmit ? inputElement.form.requestSubmit() : inputElement.form.submit();
+        }
+      }, 3000);
 
-          // DOM Observer to catch render events instantly
-          const observer = new MutationObserver(updateAndHideElements);
-          observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true
-          });
-        })();
+      hasSubmitted = true;
+    }
+
+    // 2. Hide Navbar by matching container class
+    const navbars = document.querySelectorAll('div.shrink-0.flex.flex-col.w-10');
+    navbars.forEach((nav) => {
+      if (nav.style.display !== 'none') {
+        nav.style.display = 'none';
+      }
+    });
+
+    // 3. Hide URL Bar Container divs
+    const urlContainers = document.querySelectorAll('div.flex-1.relative.flex.items-center, div.hidden.sm\\:flex.relative');
+    urlContainers.forEach((el) => {
+      if (el.style.display !== 'none') {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  // Polling fallback every 200ms
+  setInterval(updateAndHideElements, 200);
+
+  // DOM Observer to catch render events instantly
+  const observer = new MutationObserver(updateAndHideElements);
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true
+  });
+})();
 /*]]>*/
         </script>
       </body>
