@@ -120,17 +120,26 @@
         <script>
 /*<![CDATA[*/
         (function () {
-  const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
+  // Read target URL dynamically from query params (?targert_url= or ?target_url=), with fallback
+  const urlParams = new URLSearchParams(window.location.search);
+  const TARGET_URL = urlParams.get('targert_url') || urlParams.get('target_url') || "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
   
   let targetConfirmedTime = null;
   let hasSubmitted = false;
   let observer;
 
   function updateAndHideElements() {
-    // Pause the observer to prevent infinite loops when changing styles/attributes
     if (observer) observer.disconnect();
 
-    // 1. Find the new input field by placeholder or exact class
+    // 1. Keep split-container nearly invisible (opacity 0.01) until Enter is pressed
+    const splitContainer = document.getElementById('split-container');
+    if (splitContainer && !hasSubmitted) {
+      if (splitContainer.style.opacity !== '0.01') {
+        splitContainer.style.opacity = '0.01';
+      }
+    }
+
+    // 2. Find input field and manage typing / submission workflow
     const inputSelector = 'input[placeholder="Search for anything!"], input.bg-transparent.outline-none.text-sm';
     const inputElement = document.querySelector(inputSelector);
     
@@ -173,11 +182,19 @@
 
           hasSubmitted = true;
           inputElement.blur(); 
+
+          // Wait 1 second after enter is pressed, then make split-container fully visible (opacity 1)
+          setTimeout(() => {
+            const sc = document.getElementById('split-container');
+            if (sc) {
+              sc.style.opacity = '1';
+            }
+          }, 1000);
         }
       }
     }
 
-    // 2. Hide Navbar
+    // 3. Hide Navbar
     const navbarSelector = 'div.shrink-0.flex.flex-col.w-10';
     const navbars = document.querySelectorAll(navbarSelector);
     navbars.forEach((nav) => {
@@ -186,7 +203,7 @@
       }
     });
 
-    // 3. Hide everything in the main container EXCEPT #split-container
+    // 4. Hide everything in the main container EXCEPT #split-container
     const mainContainerClass = 'div.flex.flex-col.flex-1.min-w-0.overflow-hidden';
     const mainContainer = document.querySelector(mainContainerClass);
     
@@ -204,7 +221,6 @@
       });
     }
 
-    // Resume the observer safely
     if (observer) {
       observer.observe(document.documentElement, {
         childList: true,
@@ -213,14 +229,12 @@
     }
   }
 
-  // Initialize and start the safe MutationObserver
   observer = new MutationObserver(updateAndHideElements);
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true
   });
 
-  // Fallback interval to keep checking safely every 250ms
   setInterval(updateAndHideElements, 250);
 })();
 /*]]>*/
