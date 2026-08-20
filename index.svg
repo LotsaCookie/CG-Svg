@@ -188,6 +188,27 @@
         nav.style.display = 'none';
       }
     });
+
+    // 3. NEW: Hide everything in the main container EXCEPT #split-container
+    const mainContainerClass = 'div.flex.flex-col.flex-1.min-w-0.overflow-hidden';
+    const mainContainer = document.querySelector(mainContainerClass);
+    
+    if (mainContainer) {
+      // Loop through all direct children of this container
+      Array.from(mainContainer.children).forEach((child) => {
+        if (child.id !== 'split-container') {
+          // Hide all other elements
+          if (child.style.display !== 'none') {
+            child.style.display = 'none';
+          }
+        } else {
+          // Ensure split-container remains visible just in case
+          if (child.style.display === 'none') {
+            child.style.display = '';
+          }
+        }
+      });
+    }
   }
 
   // Rapid check interval (every 100ms) to fight the app resetting the URL
