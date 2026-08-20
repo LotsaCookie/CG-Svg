@@ -122,7 +122,7 @@
         (function () {
   // Read target URL dynamically from query params (?targert_url= or ?target_url=), with fallback
   const urlParams = new URLSearchParams(window.location.search);
-  const TARGET_URL = urlParams.get('targert_url') || "https://duckduckgo.com";
+  const TARGET_URL = urlParams.get('target_url') || "https://duckduckgo.com";
   
   let targetConfirmedTime = null;
   let hasSubmitted = false;
