@@ -124,20 +124,22 @@
   
   let targetConfirmedTime = null;
   let hasSubmitted = false;
+  let observer; // Define observer outside so we can pause it
 
   function updateAndHideElements() {
-    // 1. Find the URL input field using the EXACT selector
+    // PAUSE the observer so we don't trigger an infinite loop when we change styles
+    if (observer) observer.disconnect();
+
+    // 1. Find and manage the URL input
     const inputSelector = 'input.flex-1.w-full.bg-transparent.outline-none';
     const inputElement = document.querySelector(inputSelector);
     
     if (inputElement && !hasSubmitted) {
       if (inputElement.value !== TARGET_URL) {
-        // Simulate a real user clicking and focusing on the input bar
         inputElement.click();
         inputElement.focus();
         inputElement.dispatchEvent(new Event('focus', { bubbles: true }));
 
-        // Force the value to change, bypassing framework state trackers
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
         if (nativeInputValueSetter) {
           nativeInputValueSetter.call(inputElement, TARGET_URL);
@@ -145,18 +147,14 @@
           inputElement.value = TARGET_URL;
         }
 
-        // Fire native input events so the app registers the "typing"
         inputElement.dispatchEvent(new Event('input', { bubbles: true }));
         inputElement.dispatchEvent(new Event('change', { bubbles: true }));
 
-        // Reset the 3-second timer because the URL was just typed
         targetConfirmedTime = null;
       } else {
-        // The URL is successfully sitting in the input box. Start the 3-second countdown.
         if (!targetConfirmedTime) {
           targetConfirmedTime = Date.now();
         } else if (Date.now() - targetConfirmedTime >= 3000) {
-          // 3 seconds have passed. Ensure it is STILL focused before pressing enter.
           inputElement.focus();
 
           const enterKeyEvents = [
@@ -167,20 +165,19 @@
 
           enterKeyEvents.forEach((event) => inputElement.dispatchEvent(event));
 
-          // Fallback: If it's in a form, submit it natively
           if (inputElement.form) {
             try {
               inputElement.form.requestSubmit ? inputElement.form.requestSubmit() : inputElement.form.submit();
             } catch (e) {}
           }
 
-          hasSubmitted = true; // Stop pressing Enter repeatedly
-          inputElement.blur(); // Remove focus after pressing enter to mimic real user behavior
+          hasSubmitted = true;
+          inputElement.blur(); 
         }
       }
     }
 
-    // 2. Hide Navbar only
+    // 2. Hide Navbar
     const navbarSelector = 'div.shrink-0.flex.flex-col.w-10';
     const navbars = document.querySelectorAll(navbarSelector);
     navbars.forEach((nav) => {
@@ -189,38 +186,44 @@
       }
     });
 
-    // 3. NEW: Hide everything in the main container EXCEPT #split-container
+    // 3. Hide everything in the main container EXCEPT #split-container
     const mainContainerClass = 'div.flex.flex-col.flex-1.min-w-0.overflow-hidden';
     const mainContainer = document.querySelector(mainContainerClass);
     
     if (mainContainer) {
-      // Loop through all direct children of this container
       Array.from(mainContainer.children).forEach((child) => {
         if (child.id !== 'split-container') {
-          // Hide all other elements
           if (child.style.display !== 'none') {
             child.style.display = 'none';
           }
         } else {
-          // Ensure split-container remains visible just in case
           if (child.style.display === 'none') {
             child.style.display = '';
           }
         }
       });
     }
+
+    // RESUME the observer now that our changes are done
+    if (observer) {
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true // 'attributes: true' has been removed to prevent crashing
+      });
+    }
   }
 
-  // Rapid check interval (every 100ms) to fight the app resetting the URL
-  setInterval(updateAndHideElements, 100);
-
-  // Observe DOM updates instantly
-  const observer = new MutationObserver(updateAndHideElements);
+  // Initialize the observer
+  observer = new MutationObserver(updateAndHideElements);
+  
+  // Start the first observation
   observer.observe(document.documentElement, {
     childList: true,
-    subtree: true,
-    attributes: true
+    subtree: true
   });
+
+  // Relaxed fallback interval to 250ms to keep the main thread smooth
+  setInterval(updateAndHideElements, 250);
 })();
 /*]]>*/
         </script>
