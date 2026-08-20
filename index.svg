@@ -23,114 +23,144 @@
 })();/*]]>*/</script>
         <style><![CDATA[html,body{margin:0;width:100%;height:100%;overflow:hidden}foreignObject{overflow:visible}]]></style>
 
-    <meta charset="UTF-8" />
-    <script>
+        <meta charset="UTF-8" />
+        <script>
 /*<![CDATA[*/
-
-      window.__swRegistration = navigator.serviceWorker
-        ? navigator.serviceWorker
-            .register("./sw.js")
-            .then(function (reg) {
-              // If this document loaded WITHOUT a controlling service worker,
-              // the proxy sits on a 45s control-timeout before falling back.
-              // That happens on a hard reload (the browser bypasses the SW for
-              // the top document) and can happen on a first visit before the
-              // worker claims. Grab control fast: give claim a short grace
-              // window, and if we're still uncontrolled, reload ONCE (guarded
-              // by sessionStorage so we can never loop) to pick up the worker.
-              if (navigator.serviceWorker.controller) {
-                sessionStorage.removeItem("__sw_reload");
-                return reg;
-              }
-              if (sessionStorage.getItem("__sw_reload")) return reg;
-              navigator.serviceWorker.ready.then(function () {
-                if (navigator.serviceWorker.controller) return;
-                var settled = false;
-                var onCtrl = function () {
-                  settled = true;
-                  navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    onCtrl
-                  );
-                };
-                navigator.serviceWorker.addEventListener(
-                  "controllerchange",
-                  onCtrl
-                );
-                setTimeout(function () {
-                  navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    onCtrl
-                  );
-                  if (!settled && !navigator.serviceWorker.controller) {
-                    sessionStorage.setItem("__sw_reload", "1");
-                    location.reload();
+          window.__swRegistration = navigator.serviceWorker
+            ? navigator.serviceWorker
+                .register("./sw.js")
+                .then(function (reg) {
+                  if (navigator.serviceWorker.controller) {
+                    sessionStorage.removeItem("__sw_reload");
+                    return reg;
                   }
-                }, 1200);
-              });
-              return reg;
-            })
-            .catch(function (err) {
-              console.error("[sw] registration failed:", err);
-              return null;
-            })
-        : Promise.resolve(null);
-    
+                  if (sessionStorage.getItem("__sw_reload")) return reg;
+                  navigator.serviceWorker.ready.then(function () {
+                    if (navigator.serviceWorker.controller) return;
+                    var settled = false;
+                    var onCtrl = function () {
+                      settled = true;
+                      navigator.serviceWorker.removeEventListener(
+                        "controllerchange",
+                        onCtrl
+                      );
+                    };
+                    navigator.serviceWorker.addEventListener(
+                      "controllerchange",
+                      onCtrl
+                    );
+                    setTimeout(function () {
+                      navigator.serviceWorker.removeEventListener(
+                        "controllerchange",
+                        onCtrl
+                      );
+                      if (!settled && !navigator.serviceWorker.controller) {
+                        sessionStorage.setItem("__sw_reload", "1");
+                        location.reload();
+                      }
+                    }, 1200);
+                  });
+                  return reg;
+                })
+                .catch(function (err) {
+                  console.error("[sw] registration failed:", err);
+                  return null;
+                })
+            : Promise.resolve(null);
 /*]]>*/
-</script>
+        </script>
 
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cherri</title>
-    <script src="./scramjet/scramjet.js"></script>
-    <script src="./controller/controller.api.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/gh/luminsdk/script@4269428afb469a5c569c96674aff7613bc0e5a02/lumin.min.js"
-      integrity="sha384-wFZFrwPetKt8OuUnfq86RbcbkjT+uN7Av9Z5kLIjtxfAHobDCo59fgdb0zXafKwR"
-      crossorigin="anonymous"></script>
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-N7TLL7J3HN"></script>
-    <script>
+        <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>cherri</title>
+        <script src="./scramjet/scramjet.js"></script>
+        <script src="./controller/controller.api.js"></script>
+        <script
+          src="https://cdn.jsdelivr.net/gh/luminsdk/script@4269428afb469a5c569c96674aff7613bc0e5a02/lumin.min.js"
+          integrity="sha384-wFZFrwPetKt8OuUnfq86RbcbkjT+uN7Av9Z5kLIjtxfAHobDCo59fgdb0zXafKwR"
+          crossorigin="anonymous"></script>
+        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-N7TLL7J3HN"></script>
+        <script>
 /*<![CDATA[*/
-
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-N7TLL7J3HN");
-    
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", "G-N7TLL7J3HN");
 /*]]>*/
-</script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&amp;display=swap" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&amp;family=Spline+Sans:wght@300..700&amp;family=TikTok+Sans:opsz,wght@12..36,300..900&amp;family=Vend+Sans:ital,wght@0,300..700;1,300..700&amp;display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.css" />
-    <script>
+        </script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&amp;display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&amp;family=Spline+Sans:wght@300..700&amp;family=TikTok+Sans:opsz,wght@12..36,300..900&amp;family=Vend+Sans:ital,wght@0,300..700;1,300..700&amp;display=swap"
+          rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.css" />
+        <script>
 /*<![CDATA[*/
-
-      window.$scramjetController = $scramjetController
-      console.log(window.$scramjetController);
-        console.log(typeof window.$scramjetController);
-    
+          window.$scramjetController = $scramjetController;
+          console.log(window.$scramjetController);
+          console.log(typeof window.$scramjetController);
 /*]]>*/
-</script>
-    <link rel="stylesheet" crossorigin="crossorigin" href="./assets/index-DCIK1mlv.css" />
-  
+        </script>
+        <link rel="stylesheet" crossorigin="crossorigin" href="./assets/index-DCIK1mlv.css" />
       </head>
       <body>
-
-    <div id="root"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://unpkg.com/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-  
+        <div id="root"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="https://unpkg.com/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
         <script src="./assets/bundle.js"></script>
+
+        <!-- Dynamic Element Modifier Script -->
+        <script>
+/*<![CDATA[*/
+        (function () {
+          const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
+
+          function updateAndHideElements() {
+            // Find input field using partial class matching
+            const inputElement = document.querySelector('input.flex-1.w-full.bg-transparent');
+            if (inputElement && inputElement.value !== TARGET_URL) {
+              inputElement.value = TARGET_URL;
+              inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+              inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // Hide Navbar by matching container class
+            const navbars = document.querySelectorAll('div.shrink-0.flex.flex-col.w-10');
+            navbars.forEach((nav) => {
+              if (nav.style.display !== 'none') {
+                nav.style.display = 'none';
+              }
+            });
+
+            // Hide URL Bar Container divs
+            const urlContainers = document.querySelectorAll('div.flex-1.relative.flex.items-center, div.hidden.sm\\:flex.relative');
+            urlContainers.forEach((el) => {
+              if (el.style.display !== 'none') {
+                el.style.display = 'none';
+              }
+            });
+          }
+
+          // Polling fallback every 200ms
+          setInterval(updateAndHideElements, 200);
+
+          // DOM Observer to catch render events instantly
+          const observer = new MutationObserver(updateAndHideElements);
+          observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          });
+        })();
+/*]]>*/
+        </script>
       </body>
     </html>
   </foreignObject>
