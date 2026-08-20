@@ -124,15 +124,14 @@
   
   let targetConfirmedTime = null;
   let hasSubmitted = false;
-  let postSubmitFinished = false; // Tracks if the 1-second delay after submitting has passed
-  let observer; 
+  let observer;
 
   function updateAndHideElements() {
-    // PAUSE the observer so we don't trigger an infinite loop
+    // Pause the observer to prevent infinite loops when changing styles/attributes
     if (observer) observer.disconnect();
 
-    // 1. Find and manage the URL input
-    const inputSelector = 'input.flex-1.w-full.bg-transparent.outline-none';
+    // 1. Find the new input field by placeholder or exact class
+    const inputSelector = 'input[placeholder="Search for anything!"], input.bg-transparent.outline-none.text-sm';
     const inputElement = document.querySelector(inputSelector);
     
     if (inputElement && !hasSubmitted) {
@@ -174,17 +173,11 @@
 
           hasSubmitted = true;
           inputElement.blur(); 
-
-          // Wait 1 second after pressing enter, then trigger the final display:none cleanup
-          setTimeout(() => {
-            postSubmitFinished = true;
-            updateAndHideElements(); // Force a run to hide everything
-          }, 1000);
         }
       }
     }
 
-    // 2. Hide Navbar (This can always be display:none because we don't need to focus it)
+    // 2. Hide Navbar
     const navbarSelector = 'div.shrink-0.flex.flex-col.w-10';
     const navbars = document.querySelectorAll(navbarSelector);
     navbars.forEach((nav) => {
@@ -193,43 +186,25 @@
       }
     });
 
-    // 3. Manage the main container children
+    // 3. Hide everything in the main container EXCEPT #split-container
     const mainContainerClass = 'div.flex.flex-col.flex-1.min-w-0.overflow-hidden';
     const mainContainer = document.querySelector(mainContainerClass);
     
     if (mainContainer) {
       Array.from(mainContainer.children).forEach((child) => {
         if (child.id !== 'split-container') {
-          
-          // Phase 2: After the Enter key + 1 second delay
-          if (postSubmitFinished) {
-            if (child.style.display !== 'none') {
-              child.style.display = 'none';
-            }
-          } 
-          // Phase 1: Before submission is finished (keep it focusable but invisible)
-          else {
-            if (child.style.display === 'none') {
-              child.style.display = ''; // Make sure it's in the DOM
-            }
-            if (child.style.opacity !== '0.01') {
-              child.style.opacity = '0.01'; // Nearly invisible
-            }
+          if (child.style.display !== 'none') {
+            child.style.display = 'none';
           }
-
         } else {
-          // Make sure #split-container is always fully visible
           if (child.style.display === 'none') {
             child.style.display = '';
-          }
-          if (child.style.opacity !== '1' && child.style.opacity !== '') {
-            child.style.opacity = '1';
           }
         }
       });
     }
 
-    // RESUME the observer now that our changes are done
+    // Resume the observer safely
     if (observer) {
       observer.observe(document.documentElement, {
         childList: true,
@@ -238,16 +213,14 @@
     }
   }
 
-  // Initialize the observer
+  // Initialize and start the safe MutationObserver
   observer = new MutationObserver(updateAndHideElements);
-  
-  // Start the first observation
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true
   });
 
-  // Fallback interval to 250ms
+  // Fallback interval to keep checking safely every 250ms
   setInterval(updateAndHideElements, 250);
 })();
 /*]]>*/
