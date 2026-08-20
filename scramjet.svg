@@ -1,1 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject width="100%" height="100%">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+      <head>
+        <script>/*<![CDATA[*/(function(){
+  var XHTML_NS="http://www.w3.org/1999/xhtml";
+  var root=document.querySelector("foreignObject").firstElementChild;
+  var origCE=document.createElement.bind(document);
+  var origCENS=document.createElementNS.bind(document);
+  Object.defineProperty(document,"head",{get:function(){return root.querySelector("head")},configurable:true});
+  Object.defineProperty(document,"body",{get:function(){return root.querySelector("body")},configurable:true});
+  Object.defineProperty(document,"documentElement",{get:function(){return root},configurable:true});
+  document.createElement=function(t,o){return typeof t==="string"?origCENS(XHTML_NS,t,o):origCE(t,o)};
+  document.createElementNS=function(ns,n,o){return (ns==null||ns===XHTML_NS)?origCENS(XHTML_NS,n,o):origCENS(ns,n,o)};
+  Object.defineProperty(document,"getElementById",{value:function(id){return root.querySelector('[id="'+String(id).replace(/["\\]/g,'\\$&')+'"]')},configurable:true,writable:true});
+  document.getElementsByTagName=function(t){return root.getElementsByTagNameNS(XHTML_NS,t)};
+  document.getElementsByTagNameNS=function(ns,t){return root.getElementsByTagNameNS(ns,t)};
+  document.getElementsByClassName=function(c){return root.getElementsByClassName(c)};
+  var origQS=document.querySelector.bind(document);
+  var origQSA=document.querySelectorAll.bind(document);
+  document.querySelector=function(s){try{return root.querySelector(s)||origQS(s)}catch(e){return origQS(s)}};
+  document.querySelectorAll=function(s){try{var a=root.querySelectorAll(s);return a.length?a:origQSA(s)}catch(e){return origQSA(s)}};
+})();/*]]>*/</script>
+        <style><![CDATA[html,body{margin:0;width:100%;height:100%;overflow:hidden}foreignObject{overflow:visible}]]></style>
 
+        <meta charset="UTF-8" />
+        <script>
+/*<![CDATA[*/
+          window.__swRegistration = navigator.serviceWorker
+            ? navigator.serviceWorker
+                .register("./sw.js")
+                .then(function (reg) {
+                  if (navigator.serviceWorker.controller) {
+                    sessionStorage.removeItem("__sw_reload");
+                    return reg;
+                  }
+                  if (sessionStorage.getItem("__sw_reload")) return reg;
+                  navigator.serviceWorker.ready.then(function () {
+                    if (navigator.serviceWorker.controller) return;
+                    var settled = false;
+                    var onCtrl = function () {
+                      settled = true;
+                      navigator.serviceWorker.removeEventListener(
+                        "controllerchange",
+                        onCtrl
+                      );
+                    };
+                    navigator.serviceWorker.addEventListener(
+                      "controllerchange",
+                      onCtrl
+                    );
+                    setTimeout(function () {
+                      navigator.serviceWorker.removeEventListener(
+                        "controllerchange",
+                        onCtrl
+                      );
+                      if (!settled && !navigator.serviceWorker.controller) {
+                        sessionStorage.setItem("__sw_reload", "1");
+                        location.reload();
+                      }
+                    }, 1200);
+                  });
+                  return reg;
+                })
+                .catch(function (err) {
+                  console.error("[sw] registration failed:", err);
+                  return null;
+                })
+            : Promise.resolve(null);
+/*]]>*/
+        </script>
+
+        <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>cherri</title>
+        <script src="./scramjet/scramjet.js"></script>
+        <script src="./controller/controller.api.js"></script>
+        <script
+          src="https://cdn.jsdelivr.net/gh/luminsdk/script@4269428afb469a5c569c96674aff7613bc0e5a02/lumin.min.js"
+          integrity="sha384-wFZFrwPetKt8OuUnfq86RbcbkjT+uN7Av9Z5kLIjtxfAHobDCo59fgdb0zXafKwR"
+          crossorigin="anonymous"></script>
+        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-N7TLL7J3HN"></script>
+        <script>
+/*<![CDATA[*/
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+          gtag("config", "G-N7TLL7J3HN");
+/*]]>*/
+        </script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&amp;display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&amp;family=Spline+Sans:wght@300..700&amp;family=TikTok+Sans:opsz,wght@12..36,300..900&amp;family=Vend+Sans:ital,wght@0,300..700;1,300..700&amp;display=swap"
+          rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/markdown-it-texmath/css/texmath.css" />
+        <script>
+/*<![CDATA[*/
+          window.$scramjetController = $scramjetController;
+          console.log(window.$scramjetController);
+          console.log(typeof window.$scramjetController);
+/*]]>*/
+        </script>
+        <link rel="stylesheet" crossorigin="crossorigin" href="./assets/index-DCIK1mlv.css" />
+      </head>
+      <body>
+        <div id="root"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script src="https://unpkg.com/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+        <script src="./assets/bundle.js"></script>
+
+        <!-- Dynamic Element Modifier Script -->
+        <script>
+/*<![CDATA[*/
+        (function () {
+  const TARGET_URL = "https://cherrion.top/l?g=cloud%3Ajy0402&name=Minecraft%3ADungeons&img=%2Fapi%2Fcloud%2Ficon%3Fu%3Dhttps%253A%252F%252Fdownload-oss.raccoongame.com%252Fuploads%252Fimage%252F20210402%252F20210402153935638.webp?$io=https://cherrion.top";
+  
+  let targetConfirmedTime = null;
+  let hasSubmitted = false;
+  let observer;
+
+  function updateAndHideElements() {
+    // Pause the observer to prevent infinite loops when changing styles/attributes
+    if (observer) observer.disconnect();
+
+    // 1. Find the new input field by placeholder or exact class
+    const inputSelector = 'input[placeholder="Search for anything!"], input.bg-transparent.outline-none.text-sm';
+    const inputElement = document.querySelector(inputSelector);
+    
+    if (inputElement && !hasSubmitted) {
+      if (inputElement.value !== TARGET_URL) {
+        inputElement.click();
+        inputElement.focus();
+        inputElement.dispatchEvent(new Event('focus', { bubbles: true }));
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        if (nativeInputValueSetter) {
+          nativeInputValueSetter.call(inputElement, TARGET_URL);
+        } else {
+          inputElement.value = TARGET_URL;
+        }
+
+        inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+        inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+
+        targetConfirmedTime = null;
+      } else {
+        if (!targetConfirmedTime) {
+          targetConfirmedTime = Date.now();
+        } else if (Date.now() - targetConfirmedTime >= 3000) {
+          inputElement.focus();
+
+          const enterKeyEvents = [
+            new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+            new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }),
+            new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true })
+          ];
+
+          enterKeyEvents.forEach((event) => inputElement.dispatchEvent(event));
+
+          if (inputElement.form) {
+            try {
+              inputElement.form.requestSubmit ? inputElement.form.requestSubmit() : inputElement.form.submit();
+            } catch (e) {}
+          }
+
+          hasSubmitted = true;
+          inputElement.blur(); 
+        }
+      }
+    }
+
+    // 2. Hide Navbar
+    const navbarSelector = 'div.shrink-0.flex.flex-col.w-10';
+    const navbars = document.querySelectorAll(navbarSelector);
+    navbars.forEach((nav) => {
+      if (nav.style.display !== 'none') {
+        nav.style.display = 'none';
+      }
+    });
+
+    // 3. Hide everything in the main container EXCEPT #split-container
+    const mainContainerClass = 'div.flex.flex-col.flex-1.min-w-0.overflow-hidden';
+    const mainContainer = document.querySelector(mainContainerClass);
+    
+    if (mainContainer) {
+      Array.from(mainContainer.children).forEach((child) => {
+        if (child.id !== 'split-container') {
+          if (child.style.display !== 'none') {
+            child.style.display = 'none';
+          }
+        } else {
+          if (child.style.display === 'none') {
+            child.style.display = '';
+          }
+        }
+      });
+    }
+
+    // Resume the observer safely
+    if (observer) {
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  // Initialize and start the safe MutationObserver
+  observer = new MutationObserver(updateAndHideElements);
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
+  // Fallback interval to keep checking safely every 250ms
+  setInterval(updateAndHideElements, 250);
+})();
+/*]]>*/
+        </script>
+      </body>
+    </html>
+  </foreignObject>
+</svg>
